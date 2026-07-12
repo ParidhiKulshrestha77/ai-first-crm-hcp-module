@@ -12,5 +12,8 @@ node_modules/
 dist/
 .vite/
 
+# Local development logs
+*.log
+
 # OS
 .DS_Store
