@@ -1,0 +1,13 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/venv/bin/python",
+  "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
+  "python.terminal.useEnvFile": true,
+  "editor.formatOnSave": true,
+  "[python]": { "editor.tabSize": 4 },
+  "[javascript][javascriptreact]": { "editor.tabSize": 2 },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/venv": true,
+    "**/node_modules": true
+  }
+}

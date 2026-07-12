@@ -1,0 +1,14 @@
+# Version floors, not exact pins -- let pip resolve mutually compatible
+# versions at install time. If you need a fully reproducible build, run
+# `pip freeze > requirements.lock.txt` after a successful install.
+fastapi>=0.115
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0
+pydantic>=2.9
+pydantic-settings>=2.5
+python-dotenv>=1.0
+langgraph>=0.2.30
+langchain-core>=0.3
+langchain-groq>=0.2
+psycopg2-binary>=2.9      # only needed if using Postgres
+pymysql>=1.1               # only needed if using MySQL

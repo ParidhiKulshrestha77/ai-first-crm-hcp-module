@@ -1,0 +1,50 @@
+### Requires the "REST Client" VS Code extension (humao.rest-client).
+### With backend running (F5 in VS Code, or `uvicorn app.main:app --reload`),
+### click "Send Request" above any block below.
+
+@baseUrl = http://localhost:8000
+
+### 1. Health check
+GET {{baseUrl}}/api/health
+
+### 2. Seed demo HCPs (run once)
+POST {{baseUrl}}/api/dev/seed
+
+### 3. List HCPs -- copy an "id" from the response for the requests below
+GET {{baseUrl}}/api/hcps
+
+### 4. Create an interaction via the structured-form path
+# Replace hcp_id with a real id from step 3
+POST {{baseUrl}}/api/interactions
+Content-Type: application/json
+
+{
+  "hcp_id": "REPLACE_WITH_HCP_ID",
+  "channel": "form",
+  "interaction_type": "in_person_visit",
+  "raw_notes": "Discussed CardioFlow 10mg for elderly hypertensive patients. Dr. was receptive but wants efficacy data for over-65s before prescribing. Left 15 samples.",
+  "products_discussed": ["CardioFlow 10mg"]
+}
+
+### 5. List interactions for that HCP
+GET {{baseUrl}}/api/interactions?hcp_id=REPLACE_WITH_HCP_ID
+
+### 6. Edit an interaction -- replace interaction_id from step 4/5's response
+PATCH {{baseUrl}}/api/interactions/REPLACE_WITH_INTERACTION_ID
+Content-Type: application/json
+
+{
+  "products_discussed": ["CardioFlow 20mg"],
+  "edited_by": "field_rep_demo",
+  "reason": "Corrected dosage"
+}
+
+### 7. Chat with the agent (non-streaming) -- watch it call log_interaction itself
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{
+  "session_id": "demo-session-1",
+  "hcp_id": "REPLACE_WITH_HCP_ID",
+  "message": "Just met Dr. Kapoor, discussed GlucoBalance, he seemed neutral and asked about pricing. Follow up in 3 weeks."
+}
