@@ -48,8 +48,12 @@ def create_interaction(payload: schemas.InteractionCreate, db: Session = Depends
         interaction.followup_date = payload.followup_date
         db.commit()
 
-    # Run a compliance pass automatically -- consistent with what the agent does in chat.
-    check_compliance.invoke({"interaction_id": interaction.id})
+    # Compliance enrichment is helpful but must not turn a successfully saved
+    # interaction into a 500 when the AI provider is unavailable.
+    try:
+        check_compliance.invoke({"interaction_id": interaction.id})
+    except Exception:
+        pass
 
     db.refresh(interaction)
     return interaction

@@ -5,7 +5,7 @@ export const fetchHCPs = createAsyncThunk("hcps/fetch", () => api.listHCPs());
 
 const hcpSlice = createSlice({
   name: "hcps",
-  initialState: { list: [], selectedId: null, status: "idle" },
+  initialState: { list: [], selectedId: null, status: "idle", error: null },
   reducers: {
     selectHCP(state, action) {
       state.selectedId = action.payload;
@@ -15,6 +15,7 @@ const hcpSlice = createSlice({
     builder
       .addCase(fetchHCPs.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
       .addCase(fetchHCPs.fulfilled, (state, action) => {
         state.status = "succeeded";
@@ -23,8 +24,9 @@ const hcpSlice = createSlice({
           state.selectedId = action.payload[0].id;
         }
       })
-      .addCase(fetchHCPs.rejected, (state) => {
+      .addCase(fetchHCPs.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });

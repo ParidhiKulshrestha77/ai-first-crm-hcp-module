@@ -6,7 +6,7 @@ import LogInteractionScreen from "./components/LogInteractionScreen.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
-  const { list, selectedId, status } = useSelector((s) => s.hcps);
+  const { list, selectedId, status, error } = useSelector((s) => s.hcps);
   const [demoBusy, setDemoBusy] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function App() {
 
   useEffect(() => {
     const bootstrap = async () => {
-      if (list.length === 0 && status !== "loading") {
+      if (list.length === 0 && status === "succeeded") {
         try {
           await api.seedDemoData();
           dispatch(fetchHCPs());
@@ -73,6 +73,9 @@ export default function App() {
       </header>
 
       <main>
+        {status === "failed" && (
+          <p className="form-error">Unable to load HCPs: {error || "please refresh the page."}</p>
+        )}
         {selectedId ? (
           <LogInteractionScreen hcpId={selectedId} />
         ) : (

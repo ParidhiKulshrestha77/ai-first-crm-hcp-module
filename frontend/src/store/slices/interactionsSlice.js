@@ -29,6 +29,10 @@ const interactionsSlice = createSlice({
         state.status = "succeeded";
         state.list = action.payload;
       })
+      .addCase(fetchInteractions.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
       .addCase(submitInteraction.pending, (state) => {
         state.submitStatus = "loading";
         state.error = null;

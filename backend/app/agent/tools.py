@@ -294,12 +294,22 @@ def check_compliance(interaction_id: str) -> dict:
         if not interaction or not interaction.raw_notes:
             return {"error": "Interaction not found or has no notes"}
 
-        result = _llm_json(f"""You are a pharma compliance screener. Review this field rep's note for
+        try:
+            result = _llm_json(f"""You are a pharma compliance screener. Review this field rep's note for
 potential off-label promotion, unsubstantiated claims, or improper incentives.
 Return ONLY JSON: {{"flagged": true/false, "risk_level": "none|low|medium|high", "notes": "short explanation"}}.
 
 Note: \"\"\"{interaction.raw_notes}\"\"\"
 """)
+        except Exception:
+            # Compliance enrichment must never prevent a rep from saving an
+            # interaction. It can be re-run later when the AI provider is up.
+            return {
+                "interaction_id": interaction_id,
+                "flagged": False,
+                "risk_level": "unavailable",
+                "notes": "Compliance screening is temporarily unavailable.",
+            }
         interaction.compliance_flagged = bool(result.get("flagged", False))
         interaction.compliance_notes = result.get("notes", "")
         db.commit()
