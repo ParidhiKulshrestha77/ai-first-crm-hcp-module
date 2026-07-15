@@ -30,7 +30,7 @@ export default function StructuredForm({ hcpId }) {
       .map((p) => p.trim())
       .filter(Boolean);
 
-    await dispatch(
+    const action = await dispatch(
       submitInteraction({
         hcp_id: hcpId,
         channel: "form",
@@ -39,9 +39,11 @@ export default function StructuredForm({ hcpId }) {
         products_discussed,
       })
     );
-    dispatch(clearDraft());
-    dispatch(markSynced());
-    setProductsText("");
+    if (submitInteraction.fulfilled.match(action)) {
+      dispatch(clearDraft());
+      dispatch(markSynced());
+      setProductsText("");
+    }
   };
 
   return (

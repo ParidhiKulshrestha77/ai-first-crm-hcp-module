@@ -92,7 +92,44 @@ PRIMARY_MODEL=llama-3.3-70b-versatile
 CONTEXT_MODEL=llama-3.3-70b-versatile
 ```
 
-`DATABASE_URL` may instead use a PostgreSQL or MySQL SQLAlchemy connection string. SQLite is the default and requires no additional setup.
+`DATABASE_URL` may instead use a PostgreSQL (e.g., Neon) or MySQL SQLAlchemy connection string. SQLite is the default and requires no additional setup.
+
+## Neon (PostgreSQL) quickstart
+
+### 1) Create a Neon project + database
+- Sign in to Neon: https://neon.tech/
+- Create a **Project** and then create a **Database**.
+
+### 2) Set `DATABASE_URL`
+In Neon, copy the **Connection string** (PostgreSQL). It will look like one of these:
+- `postgresql+psycopg2://USER:PASSWORD@HOST:5432/DB_NAME`
+- or `postgres://USER:PASSWORD@HOST:5432/DB_NAME`
+
+Set it in `backend/.env`:
+
+```dotenv
+DATABASE_URL=postgresql+psycopg2://USER:PASSWORD@HOST:5432/DB_NAME
+```
+
+### 3) Run the app locally against Neon
+Backend:
+
+```powershell
+cd backend
+uvicorn app.main:app --reload --port 8000
+```
+
+The app auto-creates tables on startup via `Base.metadata.create_all(...)`.
+
+### 4) Test
+Open `http://localhost:8000/api/health`.
+
+Optionally seed demo data:
+
+```powershell
+Invoke-RestMethod -Method Post http://localhost:8000/api/dev/seed
+```
+
 
 ## Useful API endpoints
 
